@@ -15,7 +15,10 @@ class Builder
     {
         $menu = $factory->createItem('root');
         $menu->setChildrenAttribute('class','nav navbar-nav');
-        $menu->addChild('Home', ['route' => 'homepage']);
+        $menu->addChild('This Month', ['route' => 'this_month']);
+        $menu->addChild('Last Month', ['route' => 'last_month']);
+        $menu->addChild('Login', ['route' => 'login']);
+        $menu->addChild('Register', ['route' => 'new_user']);
         return $menu;
     }
 }
