@@ -6,19 +6,36 @@ security:
     providers:
         in_memory:
             memory: ~
-
+        my_db_provider:
+            entity: { class: AppBundle:User, property: email }
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+    role_hierarchy:
+        ROLE_USER: [IS_AUTHENTICATED_ANONYMOUSLY, ROLE_USER]
+        ROLE_INACTIVE: ROLE_INACTIVE
     firewalls:
+#        access_denied_url: login
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
         main:
+            context: main
+            provider: my_db_provider
             anonymous: ~
-            # activate different ways to authenticate
+            logout: ~
+            http_basic: ~
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: homepage
+            logout:
+                path:   /logout
+                target: /login
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -17,8 +17,17 @@ class Builder
         $menu->setChildrenAttribute('class','nav navbar-nav');
         $menu->addChild('This Month', ['route' => 'this_month']);
         $menu->addChild('Last Month', ['route' => 'last_month']);
-        $menu->addChild('Login', ['route' => 'login']);
-        $menu->addChild('Register', ['route' => 'new_user']);
+        $menu->addChild('Register', ['route' => 'user_registration']);
         return $menu;
     }
+
+//    public function adminMenu(MenuFactory $factory, array $opions)
+//    {
+//        $menu = $factory->createItem('root');
+//        $menu->setChildrenAttribute('class','nav navbar-nav');
+//        $menu->addChild('USERS', ['route' => 'users']);
+//        $menu->addChild('Logout', ['route' => 'logout']);
+//        return $menu;
+//    }
+
 }

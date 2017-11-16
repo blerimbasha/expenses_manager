@@ -14,6 +14,15 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         // replace this example code with whatever you need
-        return $this->render('default/index.html.twig');
+        if ($this->get('security.context')->isGranted('ROLE_USER')) {
+            return $this->render('users/index.html.twig');
+        } else {
+           if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {
+              return $this->render('admin/index.html.twig');
+           } else {
+               return $this->redirectToRoute('login');
+           }
+        }
+
     }
 }

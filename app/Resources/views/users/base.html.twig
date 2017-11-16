@@ -11,28 +11,31 @@
 
     </head>
     <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ path('homepage') }}">Expensive Manager</a>
-            </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                {{ knp_menu_render('AppBundle:Builder:mainMenu') }}
-            </div>
-        </div>
-    </nav>
     <div class="container-fluid">
-        {% block body %}{% endblock %}
+       <div class="container">
+           <nav class="navbar navbar-inverse">
+               <div class="container-fluid">
+                   <div class="navbar-header">
+                       <a class="navbar-brand" href="#">Expenses Manager :D</a>
+                   </div>
+                   <ul class="nav navbar-nav">
+                       <li class="active"><a href="#">Home</a></li>
+                       <li>{{ knp_menu_render('AppBundle:Builder:mainMenu') }}</li>
+                       <li class="dropdown">
+                           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Month`s
+                               <span class="caret"></span></a>
+                           <ul class="dropdown-menu">
+                               <li><a href="#">Page 1-2</a></li>
+                               <li><a href="#">Page 1-3</a></li>
+                           </ul>
+                       </li>
+                       <li><a href="{{ path('logout') }}">Logout</a></li>
+                   </ul>
+               </div>
+           </nav>
+           {% block body %}{% endblock %}
+       </div>
     </div>
         {% block javascripts %}
             <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
