@@ -9,14 +9,11 @@
 namespace AppBundle\Controller;
 
 
-
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("register")
@@ -35,21 +32,24 @@ class RegisterController extends Controller
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
+        $translation = $this->get('translator');
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            try {
-            $password = $this->get('security.password_encoder')
-                ->encodePassword($user, $user->getPlainPassword());
-            $user->setPassword($password);
-            $user->setToken($password);
+            try {
+                $password = $this->get('security.password_encoder')
+                    ->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($password);
+                $user->setToken($password);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-//            } catch (\Exception $exception) {
-//                $logger->error('User has not been created', $exception);
-//            }
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+                $this->addFlash('error', $translation->trans('user.registered'));
+            } catch (\Exception $exception) {
+                $logger = $this->get('logger');
+                $logger->error('User has not been created', $exception);
+                $this->addFlash('error', $translation->trans('user.not_registered'));
+            }
             return $this->redirectToRoute('homepage');
         }
         return $this->render('users/new.html.twig', [

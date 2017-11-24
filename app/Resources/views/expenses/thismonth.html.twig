@@ -4,4 +4,51 @@
 {% endblock %}
 {% block body %}
     <h1>This month</h1>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
+    {{ include('expenses/includes/add_transaction.html.twig') }}
+    <div class="panel panel-default">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <th>id</th>
+                    <th>userid</th>
+                    <th>categoryid</th>
+                    <th>quantity</th>
+                    <th>description</th>
+                    <th>friends</th>
+                    <th>createdate</th>
+                    <th>updatedate</th>
+                    <th>actions</th>
+                </thead>
+                <tbody>
+                {% for translation in transactions %}
+                    <tr>
+                        <td>{{ translation.id }}</td>
+                        <td>{{ translation.userid }}</td>
+                        <td>{{ translation.categoryid }}</td>
+                        <td>{{ translation.quantity }}</td>
+                        <td>{{ translation.description }}</td>
+                        <td>{{ translation.friends }}</td>
+                        <td>{{ translation.createdate|date('d.m.Y') }}</td>
+                        <td>{{ translation.updatedate|date('d.m.Y') }}</td>
+                        <td>
+                            <a data-target="#transaction{{ translation.id }}"
+                               title="{{ 'delete'|trans }}"
+                               data-toggle="modal"
+                               class="btn btn-sm btn-danger ">
+                                <i class="fa fa-trash"></i>
+                                {{ 'Delete'|trans }}
+                            </a>
+                        </td>
+                    </tr>
+                    {{ include('expenses/includes/deletel.html.twig') }}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

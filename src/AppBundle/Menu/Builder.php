@@ -17,7 +17,6 @@ class Builder
         $menu->setChildrenAttribute('class','nav navbar-nav');
         $menu->addChild('This Month', ['route' => 'this_month']);
         $menu->addChild('Last Month', ['route' => 'last_month']);
-        $menu->addChild('Register', ['route' => 'user_registration']);
         return $menu;
     }
 

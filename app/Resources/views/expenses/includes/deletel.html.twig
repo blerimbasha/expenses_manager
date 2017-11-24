@@ -1,0 +1,24 @@
+<div class="modal fade" id="transaction{{ translation.id }}" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal">&times;
+                </button>
+                <h4 style="color: #333;"
+                    class="modal-title">{{ 'warning'| trans }}!</h4>
+            </div>
+            <div class="modal-body">
+                <p style="color: #333;">{{ 'user.areyou_sure'| trans }}, <b>{{ translation.description }}</b>
+                    ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success"
+                        data-dismiss="modal">{{ 'cancel'| trans }}
+                </button>
+                <a href="{{ path('remove_transaction', {id: translation.id('id')}) }}"
+                   class="btn btn-sm btn-danger" name="submit">{{ 'delete'| trans }}</a>
+            </div>
+        </div>
+    </div>
+</div>
