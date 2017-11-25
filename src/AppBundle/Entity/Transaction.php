@@ -16,7 +16,7 @@ class Transaction
     {
         $this->createDate = new \DateTime();
         $this->updateDate = new \DateTime();
-        $this->userId = '1';
+        $this->userId = 1;
     }
     /**
      * @var int
@@ -37,7 +37,8 @@ class Transaction
     /**
      * @var int
      *
-     * @ORM\Column(name="category_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category" ,inversedBy="category", cascade={"persist"})
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     private $categoryId;
 

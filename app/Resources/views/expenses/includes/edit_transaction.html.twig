@@ -1,0 +1,11 @@
+{% extends 'users/base.html.twig' %}
+{% block title %}
+    {{ parent() }} this month
+{% endblock %}
+{% block body %}
+    <h1>edit transaction</h1>
+    {{ form_start(form) }}
+    {{ form_row(form) }}
+    <input type="submit" class="btn btn-success" value="{{ 'Submit'|trans }}">
+    {{ form_end(form) }}
+{% endblock %}

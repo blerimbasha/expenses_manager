@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,15 @@ class Category
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Transaction",mappedBy="categoryId")
+     */
+    private $category;
+
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -61,4 +71,19 @@ class Category
     {
         return $this->name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+
 }

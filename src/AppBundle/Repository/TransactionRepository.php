@@ -12,4 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class TransactionRepository extends EntityRepository
 {
+    public function searchAction($day)
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.createDate','DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

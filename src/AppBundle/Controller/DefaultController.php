@@ -19,7 +19,7 @@ class DefaultController extends Controller
             $month = new DateTime();
             $currentMonth = $month->format('m');
             if (date('m') == $currentMonth) {
-                return $this->render('expenses/thismonth.html.twig');
+                return $this->redirectToRoute('this_month');
             }
         } else {
            if ($this->get('security.context')->isGranted('ROLE_ADMIN')) {

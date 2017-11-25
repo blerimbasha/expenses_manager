@@ -28,8 +28,11 @@ class ExpensesManager extends Controller
         $form->handleRequest($request);
         $translation = $this->get('translator');
 
+        $editform = $this->createForm(TransactionType::class,$newtransaction);
+        $editform->handleRequest($request);
+
         //show all transactions for current month
-        $transactions = $this->getDoctrine()->getRepository(Transaction::class)->findAll();
+        $transactions = $this->getDoctrine()->getRepository(Transaction::class)->searchAction();
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -47,6 +50,40 @@ class ExpensesManager extends Controller
         return $this->render('expenses/thismonth.html.twig', [
             'form' => $form->createView(),
             'transactions' => $transactions,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/edit/{id}", name="edit_transaction")
+     */
+    public function editTransactionAction(Request $request, Transaction $transaction)
+    {
+        $translation = $this->get('translator');
+        if (!$transaction){
+            $this->addFlash('error', $translation->trans('transaction.not_exist'));
+            return $this->redirectToRoute('this_month');
+        }
+        $editTransaction = $this->createForm(TransactionType::class, $transaction);
+        $editTransaction->handleRequest($request);
+
+        if ($editTransaction->isValid() && $editTransaction->isValid()) {
+            try {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($transaction);
+                $em->flush();
+                $this->addFlash('error', $translation->trans('transaction.edited'));
+            } catch (\Exception $exception) {
+                $loger = $this->get('logger');
+                $loger->addError('Transaction is not registered',['e'=>$exception]);
+                $this->addFlash('error', $translation->trans('transaction.not_edited'));
+            }
+            return $this->redirectToRoute('this_month');
+        }
+
+        return $this->render('expenses/includes/edit_transaction.html.twig', [
+            'form' => $editTransaction->createView()
         ]);
     }
 

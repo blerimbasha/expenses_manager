@@ -7,41 +7,72 @@
 
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
+        {{ 'transaction.new'|trans }}
     </button>
+    {% for transacion in transactions %}
+
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">
+                        <span>{{ transacion.createDate|date('d') }}</span>
+                        <span>{{ transacion.createDate|date('F Y') }}</span>
+                        <span class="text-danger font-weight-bold" style="float: right">55E</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-3">
+                            <ul class="list-unstyled">
+                                <li>{{ transacion.categoryId }}</li>
+                                <li>{{ transacion.description }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-9 text-right text-danger">
+                            {{ transacion.quantity }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
     {{ include('expenses/includes/add_transaction.html.twig') }}
     <div class="panel panel-default">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
-                    <th>id</th>
-                    <th>userid</th>
-                    <th>categoryid</th>
-                    <th>quantity</th>
-                    <th>description</th>
-                    <th>friends</th>
-                    <th>createdate</th>
-                    <th>updatedate</th>
-                    <th>actions</th>
+                <th>categoryid</th>
+                <th>quantity</th>
+                <th>description</th>
+                <th>friends</th>
+                <th>createdate</th>
+                <th>updatedate</th>
+                <th>actions</th>
                 </thead>
                 <tbody>
-                {% for translation in transactions %}
+                {% for transaction in transactions %}
                     <tr>
-                        <td>{{ translation.id }}</td>
-                        <td>{{ translation.userid }}</td>
-                        <td>{{ translation.categoryid }}</td>
-                        <td>{{ translation.quantity }}</td>
-                        <td>{{ translation.description }}</td>
-                        <td>{{ translation.friends }}</td>
-                        <td>{{ translation.createdate|date('d.m.Y') }}</td>
-                        <td>{{ translation.updatedate|date('d.m.Y') }}</td>
+                        <td>{{ transaction.categoryid }}</td>
+                        <td>{{ transaction.quantity }}</td>
+                        <td>{{ transaction.description }}</td>
+                        <td>{{ transaction.friends }}</td>
+                        <td>{{ transaction.createdate|date('d.m.Y') }}</td>
+                        <td>{{ transaction.updatedate|date('d.m.Y') }}</td>
                         <td>
-                            <a data-target="#transaction{{ translation.id }}"
+                            <a data-target="#transaction{{ transaction.id }}"
                                title="{{ 'delete'|trans }}"
                                data-toggle="modal"
                                class="btn btn-sm btn-danger ">
                                 <i class="fa fa-trash"></i>
                                 {{ 'Delete'|trans }}
+                            </a>
+                            <a href="{{ path('edit_transaction',{id: transaction.id}) }}"
+                               title="{{ 'Edit'|trans }}"
+                               data-toggle="modal"
+                               class="btn btn-sm btn-warning ">
+                                <i class="fa fa-update"></i>
+                                {{ 'Edit'|trans }}
                             </a>
                         </td>
                     </tr>
