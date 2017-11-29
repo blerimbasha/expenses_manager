@@ -1,0 +1,50 @@
+<div class="modal fade" id="view-transaction{{ transaction.id }}" role="dialog">
+    <div class="modal-dialog modal-sm" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close">
+                    <a href="{{ path('remove_transaction', {id: transaction.id('id')}) }}"
+                       data-toggle="tooltip" title="{{ 'Delete'|trans }}">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </button>
+                <h4 style="color: #333;"
+                    class="modal-title">{{ 'transaction'| trans }}!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                            <div class="form-group form-inline">
+                                <i class="glyphicon glyphicon-tag"></i>
+                                <input type="text" class="form-control"value="{{ transaction.categoryId }}" readonly>
+                            </div>
+                            <div class="form-group form-inline">
+                                <i class="glyphicon glyphicon-euro"></i>
+                                <input type="text" class="form-control"value="{{ transaction.quantity }}" readonly>
+                            </div>
+                            <div class="form-group form-inline">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                                <input type="text" class="form-control"value="{{ transaction.description }}" readonly>
+                            </div>
+                            <div class="form-group form-inline">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <input type="text" class="form-control"value="{{ transaction.friends }}" readonly>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-success"
+                        data-dismiss="modal">{{ 'cancel'| trans }}
+                </button>
+                <a href="{{ path('edit_transaction',{id: transaction.id}) }}"
+                   title="{{ 'Edit'|trans }}"
+                   data-toggle="modal"
+                   class="btn btn-sm btn-warning ">
+                    <i class="fa fa-update"></i>
+                    {{ 'Edit'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

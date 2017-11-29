@@ -14,7 +14,6 @@ class Transaction
 {
     public function __construct()
     {
-        $this->createDate = new \DateTime();
         $this->updateDate = new \DateTime();
         $this->userId = 1;
     }
@@ -66,7 +65,7 @@ class Transaction
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_date", type="datetime")
+     * @ORM\Column(name="create_date", type="string")
      */
     private $createDate;
 

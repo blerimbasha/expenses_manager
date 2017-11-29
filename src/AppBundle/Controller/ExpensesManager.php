@@ -12,6 +12,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Transaction;
 use AppBundle\Entity\User;
 use AppBundle\Form\TransactionType;
+use AppBundle\Repository\TransactionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +34,13 @@ class ExpensesManager extends Controller
 
         //show all transactions for current month
         $transactions = $this->getDoctrine()->getRepository(Transaction::class)->searchAction();
+        $grouptransactions = $this->getDoctrine()->getRepository(Transaction::class)->groupTransactionAction();
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em = $this->getDoctrine()->getManager();
+                $date = new \DateTime();
+                $newtransaction->setCreateDate($date->format('d.m.Y'));
                 $em->persist($newtransaction);
                 $em->flush();
                 $this->addFlash('error', $translation->trans('transaction.registered'));
@@ -50,6 +54,7 @@ class ExpensesManager extends Controller
         return $this->render('expenses/thismonth.html.twig', [
             'form' => $form->createView(),
             'transactions' => $transactions,
+            'grouptransactions' => $grouptransactions
         ]);
     }
 

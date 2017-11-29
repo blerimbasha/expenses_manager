@@ -9,27 +9,32 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         {{ 'transaction.new'|trans }}
     </button>
-    {% for transacion in transactions %}
+    {% set totalTrans = 0 %}
 
+    {% for grouptrans in grouptransactions %}
         <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
                 <div class="panel panel-default">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">
-                        <span>{{ transacion.createDate|date('d') }}</span>
-                        <span>{{ transacion.createDate|date('F Y') }}</span>
-                        <span class="text-danger font-weight-bold" style="float: right">55E</span>
+                    <div style="overflow-y: scroll;max-height: 200px;">
+                        {% for transaction in transactions %}
+                            <div class="list-group" style="margin: 0px">
+                                <a data-target="#view-transaction{{ transaction.id }}"
+                                   title="{{ 'delete'|trans }}"
+                                   data-toggle="modal"
+                                   class="list-group-item list-group-item-action list-group-item-light" style="cursor: pointer">
+                                    {{ transaction.categoryId }} <br>
+                                    {{ transaction.description }}
+                                    <span class="text-right text-danger" style="font-weight: bold; float: right">{{ transaction.quantity }}</span>
+                                </a>
+                            </div>
+                            {% set totalTrans = totalTrans + transaction.quantity %}
+                            {{ include('expenses/includes/view_transaction.html.twig') }}
+                        {% endfor %}
                     </div>
-                    <div class="panel-body">
-                        <div class="col-md-3">
-                            <ul class="list-unstyled">
-                                <li>{{ transacion.categoryId }}</li>
-                                <li>{{ transacion.description }}</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-9 text-right text-danger">
-                            {{ transacion.quantity }}
-                        </div>
+                    <div class="panel-heading">
+                        <span>{{ grouptrans.createDate|date('d') }}</span>
+                        <span>{{ grouptrans.createDate|date('F Y') }}</span>
+                        <span class="text-danger" style="float: right;font-weight: bold">{{ totalTrans }}</span>
                     </div>
                 </div>
             </div>
@@ -38,48 +43,4 @@
 
 
     {{ include('expenses/includes/add_transaction.html.twig') }}
-    <div class="panel panel-default">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                <th>categoryid</th>
-                <th>quantity</th>
-                <th>description</th>
-                <th>friends</th>
-                <th>createdate</th>
-                <th>updatedate</th>
-                <th>actions</th>
-                </thead>
-                <tbody>
-                {% for transaction in transactions %}
-                    <tr>
-                        <td>{{ transaction.categoryid }}</td>
-                        <td>{{ transaction.quantity }}</td>
-                        <td>{{ transaction.description }}</td>
-                        <td>{{ transaction.friends }}</td>
-                        <td>{{ transaction.createdate|date('d.m.Y') }}</td>
-                        <td>{{ transaction.updatedate|date('d.m.Y') }}</td>
-                        <td>
-                            <a data-target="#transaction{{ transaction.id }}"
-                               title="{{ 'delete'|trans }}"
-                               data-toggle="modal"
-                               class="btn btn-sm btn-danger ">
-                                <i class="fa fa-trash"></i>
-                                {{ 'Delete'|trans }}
-                            </a>
-                            <a href="{{ path('edit_transaction',{id: transaction.id}) }}"
-                               title="{{ 'Edit'|trans }}"
-                               data-toggle="modal"
-                               class="btn btn-sm btn-warning ">
-                                <i class="fa fa-update"></i>
-                                {{ 'Edit'|trans }}
-                            </a>
-                        </td>
-                    </tr>
-                    {{ include('expenses/includes/deletel.html.twig') }}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
 {% endblock %}
