@@ -9,9 +9,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\GroupTransactions;
 use AppBundle\Entity\Transaction;
-use AppBundle\Entity\User;
 use AppBundle\Form\TransactionType;
+use AppBundle\Repository\GroupTransactionsRepository;
 use AppBundle\Repository\TransactionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,6 +26,7 @@ class ExpensesManager extends Controller
     public function thisMonthAction(Request $request)
     {
         $newtransaction = new Transaction();
+        $newgrouptransaction = new GroupTransactions();
         $form = $this->createForm(TransactionType::class, $newtransaction);
         $form->handleRequest($request);
         $translation = $this->get('translator');
@@ -34,15 +36,22 @@ class ExpensesManager extends Controller
 
         //show all transactions for current month
         $transactions = $this->getDoctrine()->getRepository(Transaction::class)->searchAction();
-        $grouptransactions = $this->getDoctrine()->getRepository(Transaction::class)->groupTransactionAction();
+        $grouptransactions = $this->getDoctrine()->getRepository(GroupTransactions::class)->searchAction();
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $em = $this->getDoctrine()->getManager();
                 $date = new \DateTime();
-                $newtransaction->setCreateDate($date->format('d.m.Y'));
+                $date->setTime(0,0,0);
+                $newtransaction->setCreateDate($date);
                 $em->persist($newtransaction);
                 $em->flush();
+
+                $newgrouptransaction->setCreateDate($date);
+                $newgrouptransaction->setTransactionId($em->getReference(Transaction::class, $newtransaction->getId()));
+                $em->persist($newgrouptransaction);
+                $em->flush();
+
                 $this->addFlash('error', $translation->trans('transaction.registered'));
             } catch (\Exception $exception) {
                 $loger = $this->get('logger');

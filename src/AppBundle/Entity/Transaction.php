@@ -65,7 +65,7 @@ class Transaction
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="create_date", type="string")
+     * @ORM\Column(name="create_date", type="datetime")
      */
     private $createDate;
 
@@ -218,7 +218,7 @@ class Transaction
     /**
      * Get createDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreateDate()
     {
@@ -241,7 +241,7 @@ class Transaction
     /**
      * Get updateDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdateDate()
     {
