@@ -4,11 +4,27 @@
 {% endblock %}
 {% block body %}
     <h1>This month</h1>
-
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         {{ 'transaction.new'|trans }}
     </button>
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="panel panel-success text-center">
+                <div class="list-group">
+                    <a data-target="#user-wallet"
+                       data-toggle="modal"
+                       class="list-group-item list-group-item-action list-group-item-light"
+                       style="cursor: pointer">
+                        <h3>{{ app.user.name }}</h3>
+                    </a>
+                </div>
+                <div class="panel-heading">
+                    <h2>$ {{ moneyInWallets[0].quantity }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
     {% for transactions in days %}
         {% set totalTrans = 0 %}
         <div class="row">
@@ -44,4 +60,6 @@
 
 
     {{ include('expenses/includes/add_transaction.html.twig') }}
+    {{ include('expenses/includes/add_wallet.html.twig') }}
+
 {% endblock %}

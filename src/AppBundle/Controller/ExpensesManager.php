@@ -11,12 +11,16 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\GroupTransactions;
 use AppBundle\Entity\Transaction;
+use AppBundle\Entity\UserWallet;
 use AppBundle\Form\TransactionType;
+use AppBundle\Form\UserWalletType;
 use AppBundle\Repository\GroupTransactionsRepository;
 use AppBundle\Repository\TransactionRepository;
+use AppBundle\Repository\UserWalletRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 class ExpensesManager extends Controller
 {
@@ -25,10 +29,32 @@ class ExpensesManager extends Controller
      */
     public function thisMonthAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $newtransaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $newtransaction);
         $form->handleRequest($request);
+        //add wallet budget
+        $newUserWallet = new UserWallet();
+        $userWalletForm = $this->createForm(UserWalletType::class, $newUserWallet);
+        $userWalletForm->handleRequest($request);
+
+        $loger = $this->get('logger');
         $translation = $this->get('translator');
+        //add wallet
+        if ($userWalletForm->isSubmitted() && $userWalletForm->isValid()) {
+            try {
+                $newUserWallet->setUserId($this->getUser()->getId());
+                $em->persist($newUserWallet);
+                $em->flush();
+                $this->addFlash('error', $translation->trans('transaction.registered'));
+
+            } catch (Exception $exception) {
+                $loger->addError('Wallet is not registered',['e'=>$exception]);
+                $this->addFlash('error', $translation->trans('wallet.not_registere'));
+            }
+            return $this->redirectToRoute('this_month');
+        }
+        $moneyInWallet = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney();
 
         $editform = $this->createForm(TransactionType::class,$newtransaction);
         $editform->handleRequest($request);
@@ -45,7 +71,6 @@ class ExpensesManager extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $em = $this->getDoctrine()->getManager();
                 $date = new \DateTime();
                 $date->setTime(0,0,0);
                 $newtransaction->setCreateDate($date);
@@ -55,7 +80,6 @@ class ExpensesManager extends Controller
 
                 $this->addFlash('error', $translation->trans('transaction.registered'));
             } catch (\Exception $exception) {
-                $loger = $this->get('logger');
                 $loger->addError('Transaction is not registered',['e'=>$exception]);
                 $this->addFlash('error', $translation->trans('transaction.not_registered'));
             }
@@ -63,7 +87,9 @@ class ExpensesManager extends Controller
         }
         return $this->render('expenses/thismonth.html.twig', [
             'form' => $form->createView(),
+            'userWalletForm' => $userWalletForm->createView(),
             'days' => $t,
+            'moneyInWallets' => $moneyInWallet
         ]);
     }
 
