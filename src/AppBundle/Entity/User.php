@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,6 +23,7 @@ class User implements UserInterface
     {
         $this->createdAt = new \DateTime();
         $this->roles = "ROLE_USER";
+        $this->userid = new ArrayCollection();
     }
     /**
      * @var int
@@ -90,6 +92,11 @@ class User implements UserInterface
      * @ORM\Column(name="_token", type="string")
      */
     private $token;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Transaction", mappedBy="userId")
+     */
+    private $userid;
 
 
     /**

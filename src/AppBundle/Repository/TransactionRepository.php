@@ -12,10 +12,31 @@ use Doctrine\ORM\EntityRepository;
  */
 class TransactionRepository extends EntityRepository
 {
-    public function searchAction()
+    public function searchAction($userid, $currentMonth)
     {
         return $this->createQueryBuilder('t')
+            ->select('count(t.userId)')
+            ->select('t')
+            ->where('t.userId = :userid')
+            ->andWhere('t.createDate = :currentMonth')
+            ->setParameter('userid', $userid)
+            ->setParameter('currentMonth', $currentMonth)
             ->getQuery()
             ->getResult();
+    }
+
+    public function searchLastMonthAction($userid)
+    {
+        $firstmonth = new \DateTime('first day of last month');
+        $endDate = new \DateTime('last day of last month');
+
+        $qb = $this->createQueryBuilder('t');
+        $qb->where('t.createDate BETWEEN :start AND :end');
+        $qb->andWhere('t.userId = :userid');
+        $qb->setParameter('userid', $userid);
+        $qb->setParameter('start', $firstmonth);
+        $qb->setParameter('end', $endDate);
+
+        return $qb->getQuery()->getResult();
     }
 }

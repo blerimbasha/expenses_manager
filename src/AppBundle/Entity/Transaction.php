@@ -15,7 +15,6 @@ class Transaction
     public function __construct()
     {
         $this->updateDate = new \DateTime();
-        $this->userId = 1;
     }
     /**
      * @var int
@@ -28,8 +27,8 @@ class Transaction
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="user_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="userid")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $userId;
 

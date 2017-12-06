@@ -4,4 +4,44 @@
 {% endblock %}
 {% block body %}
     <h1>Last month</h1>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        {{ 'transaction.new'|trans }}
+    </button>
+    {% for transactions in days %}
+        {% set totalTrans = 0 %}
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+                <div class="panel panel-default">
+                    <div style="overflow-y: scroll;max-height: 200px;">
+                        {% for transaction in transactions %}
+                            <div class="list-group" style="margin: 0px">
+                                <a data-target="#view-transaction{{ transaction.id }}"
+                                   title="{{ 'delete'|trans }}"
+                                   data-toggle="modal"
+                                   class="list-group-item list-group-item-action list-group-item-light"
+                                   style="cursor: pointer">
+                                    {{ transaction.categoryId }} <br>
+                                    {{ transaction.description }}
+                                    <span class="text-right text-danger"
+                                          style="font-weight: bold; float: right">{{ transaction.quantity }}</span>
+                                </a>
+                            </div>
+                            {% set totalTrans = totalTrans + transaction.quantity %}
+                            {{ include('expenses/includes/view_transaction.html.twig') }}
+                        {% endfor %}
+                    </div>
+                    <div class="panel-heading">
+                        <span>{{ transactions[0].createDate|date('d') }}</span>
+                        <span>{{ transactions[0].createDate|date('F Y') }}</span>
+                        <span class="text-danger" style="float: right;font-weight: bold">{{ totalTrans }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    {{ include('expenses/includes/add_transaction.html.twig') }}
 {% endblock %}

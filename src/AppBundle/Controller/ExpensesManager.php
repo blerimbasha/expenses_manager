@@ -26,17 +26,22 @@ class ExpensesManager extends Controller
     public function thisMonthAction(Request $request)
     {
         $newtransaction = new Transaction();
-        $newgrouptransaction = new GroupTransactions();
         $form = $this->createForm(TransactionType::class, $newtransaction);
         $form->handleRequest($request);
         $translation = $this->get('translator');
 
         $editform = $this->createForm(TransactionType::class,$newtransaction);
         $editform->handleRequest($request);
-
+        //get current moth
+        $month = new \DateTime();
+        $currentMonth = $month->setTime(0,0,0);
         //show all transactions for current month
-        $transactions = $this->getDoctrine()->getRepository(Transaction::class)->searchAction();
-        $grouptransactions = $this->getDoctrine()->getRepository(GroupTransactions::class)->searchAction();
+        $transactions = $this->getDoctrine()->getRepository(Transaction::class)
+            ->searchAction($this->getUser(), $currentMonth);
+        $t = [];
+        foreach ($transactions as $transaction) {
+            $t[$transaction->getCreateDate()->format('d')][] = $transaction;
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -44,12 +49,8 @@ class ExpensesManager extends Controller
                 $date = new \DateTime();
                 $date->setTime(0,0,0);
                 $newtransaction->setCreateDate($date);
+                $newtransaction->setUserId($this->getUser());
                 $em->persist($newtransaction);
-                $em->flush();
-
-                $newgrouptransaction->setCreateDate($date);
-                $newgrouptransaction->setTransactionId($em->getReference(Transaction::class, $newtransaction->getId()));
-                $em->persist($newgrouptransaction);
                 $em->flush();
 
                 $this->addFlash('error', $translation->trans('transaction.registered'));
@@ -62,8 +63,7 @@ class ExpensesManager extends Controller
         }
         return $this->render('expenses/thismonth.html.twig', [
             'form' => $form->createView(),
-            'transactions' => $transactions,
-            'grouptransactions' => $grouptransactions
+            'days' => $t,
         ]);
     }
 
@@ -129,8 +129,40 @@ class ExpensesManager extends Controller
     /**
      * @Route("/lastmonth", name="last_month")
      */
-    public function lastMonthAction()
+    public function lastMonthAction(Request $request)
     {
-        return $this->render('expenses/lastmonth.html.twig');
+        $newtransaction = new Transaction();
+        $form = $this->createForm(TransactionType::class, $newtransaction);
+        $form->handleRequest($request);
+        $translation = $this->get('translator');
+        //show all transactions last month
+        $transactions = $this->getDoctrine()->getRepository(Transaction::class)
+            ->searchLastMonthAction($this->getUser());
+        $t = [];
+        foreach ($transactions as $transaction) {
+            $t[$transaction->getCreateDate()->format('d')][] = $transaction;
+        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+            $em = $this->getDoctrine()->getManager();
+            $date = new \DateTime();
+            $date->setTime(0,0,0);
+            $newtransaction->setCreateDate($date);
+            $newtransaction->setUserId($this->getUser());
+            $em->persist($newtransaction);
+            $em->flush();
+
+            $this->addFlash('error', $translation->trans('transaction.registered'));
+            } catch (\Exception $exception) {
+                $loger = $this->get('logger');
+                $loger->addError('Transaction is not registered',['e'=>$exception]);
+                $this->addFlash('error', $translation->trans('transaction.not_registered'));
+            }
+            return $this->redirectToRoute('this_month');
+        }
+        return $this->render('expenses/lastmonth.html.twig',[
+            'form' => $form->createView(),
+            'days' => $t,
+        ]);
     }
 }
