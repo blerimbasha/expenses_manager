@@ -52,18 +52,14 @@ class ExpensesManager extends Controller
                 $loger->addError('Wallet is not registered',['e'=>$exception]);
                 $this->addFlash('error', $translation->trans('wallet.not_registere'));
             }
-            return $this->redirectToRoute('this_month');
         }
-        $moneyInWallet = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney();
-
+        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney();
+        $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
         $editform = $this->createForm(TransactionType::class,$newtransaction);
         $editform->handleRequest($request);
-        //get current moth
-        $month = new \DateTime();
-        $currentMonth = $month->setTime(0,0,0);
         //show all transactions for current month
         $transactions = $this->getDoctrine()->getRepository(Transaction::class)
-            ->searchAction($this->getUser(), $currentMonth);
+            ->searchAction($this->getUser());
         $t = [];
         foreach ($transactions as $transaction) {
             $t[$transaction->getCreateDate()->format('d')][] = $transaction;
@@ -89,7 +85,8 @@ class ExpensesManager extends Controller
             'form' => $form->createView(),
             'userWalletForm' => $userWalletForm->createView(),
             'days' => $t,
-            'moneyInWallets' => $moneyInWallet
+            'moneyInWallets' => $moneyInWallets,
+            'totalTransactions' => $allTransactionCM
         ]);
     }
 

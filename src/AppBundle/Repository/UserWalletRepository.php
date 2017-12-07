@@ -15,8 +15,8 @@ class UserWalletRepository extends EntityRepository
     public function searchMoney()
     {
         return $this->createQueryBuilder('w')
+            ->select('Sum(w.quantity)')
             ->getQuery()
             ->getResult();
-
     }
 }

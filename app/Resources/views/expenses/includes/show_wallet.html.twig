@@ -1,0 +1,22 @@
+<div class="">
+        <div class="panel panel-default">
+            {% set totalwallet = moneyInWallets[0][1] %}
+            <div class="panel-body text-left">
+                <div class="col-md-6">
+                    Outflow
+                </div>
+                <div class="col-md-6 text-right">
+                    {% set totaltrans = totalTransactions[0][1] %}
+                    {{ totaltrans }}
+                </div>
+            </div>
+            <div class="panel-body text-left">
+                <div class="col-md-6">
+                    Avaliable
+                </div>
+                <div class="col-md-6 text-right">
+                    {{ totalwallet - totaltrans }}
+                </div>
+            </div>
+        </div>
+</div>

@@ -16,12 +16,10 @@
                        data-toggle="modal"
                        class="list-group-item list-group-item-action list-group-item-light"
                        style="cursor: pointer">
-                        <h3>{{ app.user.name }}</h3>
+                        <h3>{{ app.user.name }} <span class="glyphicon glyphicon-euro" aria-hidden="true"></span> {{ moneyInWallets[0][1] }}</h3>
                     </a>
                 </div>
-                <div class="panel-heading">
-                    <h2>$ {{ moneyInWallets[0].quantity }}</h2>
-                </div>
+                {{ include('expenses/includes/show_wallet.html.twig') }}
             </div>
         </div>
     </div>

@@ -12,15 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class TransactionRepository extends EntityRepository
 {
-    public function searchAction($userid, $currentMonth)
+    public function searchAction($userid)
     {
+        $firstmonth = new \DateTime('first day of this month');
+        $endDate = new \DateTime('last day of this month');
+
         return $this->createQueryBuilder('t')
             ->select('count(t.userId)')
             ->select('t')
             ->where('t.userId = :userid')
-            ->andWhere('t.createDate = :currentMonth')
+            ->andWhere('t.createDate BETWEEN :start AND :end')
+            ->orderBy('t.createDate','DESC')
             ->setParameter('userid', $userid)
-            ->setParameter('currentMonth', $currentMonth)
+            ->setParameter('start', $firstmonth)
+            ->setParameter('end', $endDate)
             ->getQuery()
             ->getResult();
     }
@@ -33,10 +38,27 @@ class TransactionRepository extends EntityRepository
         $qb = $this->createQueryBuilder('t');
         $qb->where('t.createDate BETWEEN :start AND :end');
         $qb->andWhere('t.userId = :userid');
+        $qb->orderBy('t.createDate','DESC');
         $qb->setParameter('userid', $userid);
         $qb->setParameter('start', $firstmonth);
         $qb->setParameter('end', $endDate);
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function countAllTransactionAction($userid)
+    {
+        $firstmonth = new \DateTime('first day of this month');
+        $endDate = new \DateTime('last day of this month');
+        return $this->createQueryBuilder('t')
+            ->select('Sum(t.quantity)')
+            ->where('t.userId = :userid')
+            ->andWhere('t.createDate BETWEEN :start AND :end')
+            ->orderBy('t.createDate','DESC')
+            ->setParameter('userid', $userid)
+            ->setParameter('start', $firstmonth)
+            ->setParameter('end', $endDate)
+            ->getQuery()
+            ->getResult();
     }
 }
