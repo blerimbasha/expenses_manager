@@ -3,19 +3,20 @@
     {{ parent() }} this month
 {% endblock %}
 {% block body %}
-    <h1>This month</h1>
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        {{ 'transaction.new'|trans }}
-    </button>
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             <div class="panel panel-success text-center">
+                <div class="alert alert-success">
+                    <b>{{ 'now'|date_modify('-1 month')|date('F Y') }}</b>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </div>
                 <div class="list-group">
                     <a data-target="#user-wallet"
                        data-toggle="modal"
                        class="list-group-item list-group-item-action list-group-item-light"
-                       style="cursor: pointer">
+                       style="cursor: pointer;border: 0">
                         <h3>{{ app.user.name }} <span class="glyphicon glyphicon-euro" aria-hidden="true"></span> {{ moneyInWallets[0][1] }}</h3>
                     </a>
                 </div>
@@ -47,8 +48,7 @@
                     {% endfor %}
                     </div>
                     <div class="panel-heading">
-                        <span>{{ transactions[0].createDate|date('d') }}</span>
-                        <span>{{ transactions[0].createDate|date('F Y') }}</span>
+                        <span><b>{{ transactions[0].createDate|date('d F Y') }}</b></span>
                         <span class="text-danger" style="float: right;font-weight: bold">{{ totalTrans }}</span>
                     </div>
                 </div>

@@ -28,10 +28,20 @@
                                <li><a href="#">Page 1-3</a></li>
                            </ul>
                        </li>
-                       <li><a href="{{ path('logout') }}">Logout</a></li>
+                       <li class="dropdown">
+                           <a href="#" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Acount
+                               <span class="caret"></span></a>
+                           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                               <li>
+                                   <a href="{{ path('logout') }}"> <span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                               </li>
+                           </ul>
+                       </li>
                    </ul>
                </div>
            </nav>
+           {% block flashmessages %}{% include 'expenses/includes/flash_messages.html.twig' %}{% endblock %}
+
            {% block body %}{% endblock %}
        </div>
     </div>

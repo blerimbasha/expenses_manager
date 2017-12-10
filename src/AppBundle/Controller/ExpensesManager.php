@@ -46,14 +46,14 @@ class ExpensesManager extends Controller
                 $newUserWallet->setUserId($this->getUser()->getId());
                 $em->persist($newUserWallet);
                 $em->flush();
-                $this->addFlash('error', $translation->trans('transaction.registered'));
+                $this->addFlash('sucess', $translation->trans('transaction.registered'));
 
             } catch (Exception $exception) {
                 $loger->addError('Wallet is not registered',['e'=>$exception]);
                 $this->addFlash('error', $translation->trans('wallet.not_registere'));
             }
         }
-        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney();
+        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney($this->getUser());
         $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
         $editform = $this->createForm(TransactionType::class,$newtransaction);
         $editform->handleRequest($request);
@@ -74,7 +74,7 @@ class ExpensesManager extends Controller
                 $em->persist($newtransaction);
                 $em->flush();
 
-                $this->addFlash('error', $translation->trans('transaction.registered'));
+                $this->addFlash('success', $translation->trans('transaction.registered'));
             } catch (\Exception $exception) {
                 $loger->addError('Transaction is not registered',['e'=>$exception]);
                 $this->addFlash('error', $translation->trans('transaction.not_registered'));
@@ -158,6 +158,8 @@ class ExpensesManager extends Controller
         $form = $this->createForm(TransactionType::class, $newtransaction);
         $form->handleRequest($request);
         $translation = $this->get('translator');
+        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchLastMoney($this->getUser());
+        $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
         //show all transactions last month
         $transactions = $this->getDoctrine()->getRepository(Transaction::class)
             ->searchLastMonthAction($this->getUser());
@@ -175,7 +177,7 @@ class ExpensesManager extends Controller
             $em->persist($newtransaction);
             $em->flush();
 
-            $this->addFlash('error', $translation->trans('transaction.registered'));
+            $this->addFlash('success', $translation->trans('transaction.registered'));
             } catch (\Exception $exception) {
                 $loger = $this->get('logger');
                 $loger->addError('Transaction is not registered',['e'=>$exception]);
@@ -186,6 +188,8 @@ class ExpensesManager extends Controller
         return $this->render('expenses/lastmonth.html.twig',[
             'form' => $form->createView(),
             'days' => $t,
+            'moneyInWallets' => $moneyInWallets,
+            'totalTransactions' => $allTransactionCM
         ]);
     }
 }

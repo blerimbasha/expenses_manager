@@ -1,22 +1,24 @@
 <div class="">
-        <div class="panel panel-default">
-            {% set totalwallet = moneyInWallets[0][1] %}
-            <div class="panel-body text-left">
-                <div class="col-md-6">
-                    Outflow
-                </div>
-                <div class="col-md-6 text-right">
-                    {% set totaltrans = totalTransactions[0][1] %}
-                    {{ totaltrans }}
-                </div>
-            </div>
-            <div class="panel-body text-left">
-                <div class="col-md-6">
-                    Avaliable
-                </div>
-                <div class="col-md-6 text-right">
-                    {{ totalwallet - totaltrans }}
-                </div>
-            </div>
+    {% set totalwallet = moneyInWallets[0][1] %}
+    <div class="panel-body text-left">
+        <div class="col-md-8">
+            Outflow
         </div>
-</div>
+        <div class="col-md-4 text-right" style="border-bottom: 1px solid silver">
+            {% set totaltrans = totalTransactions[0][1] %}
+            {{ totaltrans|number_format(2, '.',',') }}
+        </div>
+    </div>
+    <div class="panel-body text-left">
+        <div class="col-md-8">
+            Avaliable
+        </div>
+        <div class="col-md-4 text-right" style="border-bottom: 1px solid silver;">
+            {% if totalwallet - totaltrans > 1 %}
+                <span class="text-success">{{ totalwallet - totaltrans }}</span>
+                {% else %}
+                    <span class="text-danger">{{ totalwallet - totaltrans }}</span>
+            {% endif %}
+        </div>
+    </div>
+    </div>
