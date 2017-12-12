@@ -46,12 +46,13 @@ class ExpensesManager extends Controller
                 $newUserWallet->setUserId($this->getUser()->getId());
                 $em->persist($newUserWallet);
                 $em->flush();
-                $this->addFlash('sucess', $translation->trans('transaction.registered'));
 
+                $this->addFlash('success', $translation->trans('budget.registered'));
             } catch (Exception $exception) {
                 $loger->addError('Wallet is not registered',['e'=>$exception]);
-                $this->addFlash('error', $translation->trans('wallet.not_registere'));
+                $this->addFlash('error', $translation->trans('budget.not_registered'));
             }
+            return $this->redirectToRoute('this_month');
         }
         $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney($this->getUser());
         $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
@@ -110,11 +111,11 @@ class ExpensesManager extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($transaction);
                 $em->flush();
-                $this->addFlash('error', $translation->trans('transaction.edited'));
+                $this->addFlash('success', $translation->trans('transaction.edit_msg'));
             } catch (\Exception $exception) {
                 $loger = $this->get('logger');
                 $loger->addError('Transaction is not registered',['e'=>$exception]);
-                $this->addFlash('error', $translation->trans('transaction.not_edited'));
+                $this->addFlash('error', $translation->trans('transaction.not_edit_msg'));
             }
             return $this->redirectToRoute('this_month');
         }
@@ -140,7 +141,7 @@ class ExpensesManager extends Controller
         try {
             $em->remove($transaction);
             $em->flush();
-            $this->addFlash('success', $translation->trans('transaction.successfully_deleted'));
+            $this->addFlash('success', $translation->trans('transaction.deleted'));
         } catch (\Exception $exception) {
             $logger = $this->get('logger');
             $logger->addError('Transaction nut deleted', ['e' => $exception]);

@@ -7,14 +7,23 @@
         <div class="col-sm-6 col-sm-offset-3">
             <div class="panel panel-success text-center">
                 <div class="alert alert-success">
-                    <b>{{ 'now'|date_modify('-1 month')|date('F Y') }}</b>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </button>
+                   <div class="row">
+                       <div class="col-md-12">
+                           <b>{{ 'now'|date_modify('-1 month')|date('F Y') }}</b>
+                           <button type="button"
+                                   class="btn btn-success"
+                                   title="{{ 'transaction.new'|trans }}"
+                                   data-toggle="modal"
+                                   data-target="#exampleModal" style="float: right">
+                               <span class="glyphicon glyphicon-plus"  aria-hidden="true"></span>
+                           </button>
+                       </div>
+                   </div>
                 </div>
                 <div class="list-group">
                     <a data-target="#user-wallet"
                        data-toggle="modal"
+                       title="{{ 'budget.add'|trans }}"
                        class="list-group-item list-group-item-action list-group-item-light"
                        style="cursor: pointer;border: 0">
                         <h3>{{ app.user.name }} <span class="glyphicon glyphicon-euro" aria-hidden="true"></span> {{ moneyInWallets[0][1] }}</h3>
@@ -33,7 +42,7 @@
                     {% for transaction in transactions %}
                             <div class="list-group" style="margin: 0px">
                                 <a data-target="#view-transaction{{ transaction.id }}"
-                                   title="{{ 'delete'|trans }}"
+                                   title="{{ 'edit'|trans }}"
                                    data-toggle="modal"
                                    class="list-group-item list-group-item-action list-group-item-light"
                                    style="cursor: pointer">

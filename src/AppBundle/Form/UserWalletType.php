@@ -16,7 +16,11 @@ class UserWalletType extends AbstractType
     {
         $builder
             ->add('quantity')
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-success btn-block'
+                ]
+            ])
         ;
     }
     

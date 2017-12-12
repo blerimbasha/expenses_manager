@@ -57,7 +57,7 @@ class Transaction
     /**
      * @var string
      *
-     * @ORM\Column(name="friends", type="string", length=255)
+     * @ORM\Column(name="friends", type="string", length=255, nullable=true)
      */
     private $friends;
 

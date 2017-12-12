@@ -1,0 +1,24 @@
+#global
+submit: Submit
+delete: Delete
+new: New
+edit : Edit
+cancel: Cancel
+avaliable: Avaliable
+outflow: Outflow
+
+#transaction
+transaction:
+  new: New Transaction
+  name: Transaction
+  edit: Edit Transaction
+  deleted: Transaction has been deleted
+  edit_msg: Transaction has been updated
+  not_edit_msg: Transaction has been not updated
+  not_exist: Transaxtion not exist
+
+#wallet
+budget:
+  add: Add Wallet
+  registered: Your budget has been registered
+  not_registered: Your budget has been not registered
