@@ -12,14 +12,15 @@
 
     <div class="container-fluid">
        <div class="container">
-           <nav class="navbar navbar-inverse">
+           <nav class="col-sm-6 col-sm-offset-3">
                <div class="container-fluid">
-                   <div class="navbar-header">
-                       <a class="navbar-brand" href="#">Expenses Manager :D</a>
+                   <div class="row text-center">
+                       <span>Expense MAnager :D</span>
                    </div>
                    <ul class="nav navbar-nav">
-                       <li class="active"><a href="#">Home</a></li>
-                       <li>{{ knp_menu_render('AppBundle:Builder:mainMenu') }}</li>
+                       <li><a href="#">Home</a></li>
+                       <li {% if app.request.get('_route') == 'this_month' %} style="background-color: #eee;" {% endif %} ><a href="{{ path('this_month') }}">This Month</a></li>
+                       <li {% if app.request.get('_route') == 'last_month' %} style="background-color: #eee;" {% endif %} ><a href="{{ path('last_month') }}">Last Month</a></li>
                        <li class="dropdown">
                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Month`s
                                <span class="caret"></span></a>
