@@ -22,3 +22,8 @@ budget:
   add: Add Wallet
   registered: Your budget has been registered
   not_registered: Your budget has been not registered
+
+#user
+user:
+  register: User has been registered
+  not_registered: User has been not registered

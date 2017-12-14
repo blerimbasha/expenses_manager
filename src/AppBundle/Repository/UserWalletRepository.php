@@ -12,36 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class UserWalletRepository extends EntityRepository
 {
-    public function searchMoney($usrid)
+    public function budgetForMonth($usrid, $month = null)
     {
-        $firstmonth = new \DateTime('first day of this month');
-        $endDate = new \DateTime('last day of this month');
-
         return $this->createQueryBuilder('w')
             ->select('Sum(w.quantity)')
             ->where('w.userId = :userid')
-            ->andWhere('w.createDate BETWEEN :start AND :end')
+            ->andWhere('MONTH(w.createDate) = :month')
             ->setParameter('userid',$usrid)
-            ->setParameter('start', $firstmonth)
-            ->setParameter('end', $endDate)
+            ->setParameter('month', $month)
             ->getQuery()
             ->getResult();
     }
-
-    public function searchLastMoney($usrid)
-    {
-        $firstmonth = new \DateTime('first day of last month');
-        $endDate = new \DateTime('last day of last month');
-
-        return $this->createQueryBuilder('w')
-            ->select('Sum(w.quantity)')
-            ->where('w.userId = :userid')
-            ->andWhere('w.createDate BETWEEN :start AND :end')
-            ->setParameter('userid', $usrid)
-            ->setParameter('start', $firstmonth)
-            ->setParameter('end', $endDate)
-            ->getQuery()
-            ->getResult();
-    }
-
 }

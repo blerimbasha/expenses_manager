@@ -44,7 +44,7 @@ class RegisterController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
                 $em->flush();
-                $this->addFlash('error', $translation->trans('user.registered'));
+                $this->addFlash('success', $translation->trans('user.register'));
             } catch (\Exception $exception) {
                 $logger = $this->get('logger');
                 $logger->error('User has not been created', $exception);

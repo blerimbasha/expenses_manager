@@ -15,8 +15,6 @@ use AppBundle\Entity\UserWallet;
 use AppBundle\Form\TransactionType;
 use AppBundle\Form\UserWalletType;
 use AppBundle\Repository\GroupTransactionsRepository;
-use AppBundle\Repository\TransactionRepository;
-use AppBundle\Repository\UserWalletRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +23,12 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 class ExpensesManager extends Controller
 {
     /**
-     * @Route("/thismonth", name="this_month")
+     * @Route("/month/{month}", name="this_month")
      */
-    public function thisMonthAction(Request $request)
+    public function thisMonthAction(Request $request, $month = null)
     {
+        if (!$month) $month = date('m');
+
         $em = $this->getDoctrine()->getManager();
         $newtransaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $newtransaction);
@@ -49,27 +49,29 @@ class ExpensesManager extends Controller
 
                 $this->addFlash('success', $translation->trans('budget.registered'));
             } catch (Exception $exception) {
-                $loger->addError('Wallet is not registered',['e'=>$exception]);
+                $loger->addError('Wallet is not registered', ['e' => $exception]);
                 $this->addFlash('error', $translation->trans('budget.not_registered'));
             }
             return $this->redirectToRoute('this_month');
         }
-        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchMoney($this->getUser());
-        $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
-        $editform = $this->createForm(TransactionType::class,$newtransaction);
+        $budgetForMonth = $this->getDoctrine()->getRepository(UserWallet::class)
+            ->budgetForMonth($this->getUser(), $month);
+        $remainingExpenses = $this->getDoctrine()->getRepository(Transaction::class)
+            ->countAllTransactionAction($this->getUser(), $month);
+        $editform = $this->createForm(TransactionType::class, $newtransaction);
         $editform->handleRequest($request);
         //show all transactions for current month
-        $transactions = $this->getDoctrine()->getRepository(Transaction::class)
-            ->searchAction($this->getUser());
-        $t = [];
-        foreach ($transactions as $transaction) {
-            $t[$transaction->getCreateDate()->format('d')][] = $transaction;
+        $expenses = $this->getDoctrine()->getRepository(Transaction::class)
+            ->expenses($this->getUser(), $month);
+        $spent = [];
+        foreach ($expenses as $transaction) {
+            $spent[$transaction->getCreateDate()->format('d')][] = $transaction;
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $date = new \DateTime();
-                $date->setTime(0,0,0);
+                $date->setTime(0, 0, 0);
                 $newtransaction->setCreateDate($date);
                 $newtransaction->setUserId($this->getUser());
                 $em->persist($newtransaction);
@@ -77,7 +79,7 @@ class ExpensesManager extends Controller
 
                 $this->addFlash('success', $translation->trans('transaction.registered'));
             } catch (\Exception $exception) {
-                $loger->addError('Transaction is not registered',['e'=>$exception]);
+                $loger->addError('Transaction is not registered', ['e' => $exception]);
                 $this->addFlash('error', $translation->trans('transaction.not_registered'));
             }
             return $this->redirectToRoute('this_month');
@@ -85,9 +87,9 @@ class ExpensesManager extends Controller
         return $this->render('expenses/thismonth.html.twig', [
             'form' => $form->createView(),
             'userWalletForm' => $userWalletForm->createView(),
-            'days' => $t,
-            'moneyInWallets' => $moneyInWallets,
-            'totalTransactions' => $allTransactionCM
+            'days' => $spent,
+            'moneyInWallets' => $budgetForMonth,
+            'totalTransactions' => $remainingExpenses
         ]);
     }
 
@@ -99,7 +101,7 @@ class ExpensesManager extends Controller
     public function editTransactionAction(Request $request, Transaction $transaction)
     {
         $translation = $this->get('translator');
-        if (!$transaction){
+        if (!$transaction) {
             $this->addFlash('error', $translation->trans('transaction.not_exist'));
             return $this->redirectToRoute('this_month');
         }
@@ -114,7 +116,7 @@ class ExpensesManager extends Controller
                 $this->addFlash('success', $translation->trans('transaction.edit_msg'));
             } catch (\Exception $exception) {
                 $loger = $this->get('logger');
-                $loger->addError('Transaction is not registered',['e'=>$exception]);
+                $loger->addError('Transaction is not registered', ['e' => $exception]);
                 $this->addFlash('error', $translation->trans('transaction.not_edit_msg'));
             }
             return $this->redirectToRoute('this_month');
@@ -148,49 +150,5 @@ class ExpensesManager extends Controller
             $this->addFlash('error', $translation->trans('translaction.not_deleted'));
         }
         return $this->redirectToRoute('this_month');
-    }
-
-    /**
-     * @Route("/lastmonth", name="last_month")
-     */
-    public function lastMonthAction(Request $request)
-    {
-        $newtransaction = new Transaction();
-        $form = $this->createForm(TransactionType::class, $newtransaction);
-        $form->handleRequest($request);
-        $translation = $this->get('translator');
-        $moneyInWallets = $this->getDoctrine()->getRepository(UserWallet::class)->searchLastMoney($this->getUser());
-        $allTransactionCM = $this->getDoctrine()->getRepository(Transaction::class)->countAllTransactionAction($this->getUser());
-        //show all transactions last month
-        $transactions = $this->getDoctrine()->getRepository(Transaction::class)
-            ->searchLastMonthAction($this->getUser());
-        $t = [];
-        foreach ($transactions as $transaction) {
-            $t[$transaction->getCreateDate()->format('d')][] = $transaction;
-        }
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-            $em = $this->getDoctrine()->getManager();
-            $date = new \DateTime();
-            $date->setTime(0,0,0);
-            $newtransaction->setCreateDate($date);
-            $newtransaction->setUserId($this->getUser());
-            $em->persist($newtransaction);
-            $em->flush();
-
-            $this->addFlash('success', $translation->trans('transaction.registered'));
-            } catch (\Exception $exception) {
-                $loger = $this->get('logger');
-                $loger->addError('Transaction is not registered',['e'=>$exception]);
-                $this->addFlash('error', $translation->trans('transaction.not_registered'));
-            }
-            return $this->redirectToRoute('this_month');
-        }
-        return $this->render('expenses/lastmonth.html.twig',[
-            'form' => $form->createView(),
-            'days' => $t,
-            'moneyInWallets' => $moneyInWallets,
-            'totalTransactions' => $allTransactionCM
-        ]);
     }
 }

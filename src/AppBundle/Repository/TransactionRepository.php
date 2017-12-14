@@ -12,53 +12,31 @@ use Doctrine\ORM\EntityRepository;
  */
 class TransactionRepository extends EntityRepository
 {
-    public function searchAction($userid)
+    public function expenses($userid, $month)
     {
-        $firstmonth = new \DateTime('first day of this month');
-        $endDate = new \DateTime('last day of this month');
-
         return $this->createQueryBuilder('t')
             ->select('count(t.userId)')
             ->select('t')
             ->where('t.userId = :userid')
-            ->andWhere('t.createDate BETWEEN :start AND :end')
+            ->andWhere('MONTH(t.createDate) = :month')
             ->orderBy('t.createDate','DESC')
             ->setParameter('userid', $userid)
-            ->setParameter('start', $firstmonth)
-            ->setParameter('end', $endDate)
+            ->setParameter('month', $month)
             ->getQuery()
             ->getResult();
     }
 
-    public function searchLastMonthAction($userid)
+    public function countAllTransactionAction($userid, $month)
     {
-        $firstmonth = new \DateTime('first day of last month');
-        $endDate = new \DateTime('last day of last month');
-
-        $qb = $this->createQueryBuilder('t');
-        $qb->where('t.createDate BETWEEN :start AND :end');
-        $qb->andWhere('t.userId = :userid');
-        $qb->orderBy('t.createDate','DESC');
-        $qb->setParameter('userid', $userid);
-        $qb->setParameter('start', $firstmonth);
-        $qb->setParameter('end', $endDate);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function countAllTransactionAction($userid)
-    {
-        $firstmonth = new \DateTime('first day of this month');
-        $endDate = new \DateTime('last day of this month');
         return $this->createQueryBuilder('t')
             ->select('Sum(t.quantity)')
             ->where('t.userId = :userid')
-            ->andWhere('t.createDate BETWEEN :start AND :end')
+            ->andWhere('MONTH(t.createDate) = :month')
             ->orderBy('t.createDate','DESC')
             ->setParameter('userid', $userid)
-            ->setParameter('start', $firstmonth)
-            ->setParameter('end', $endDate)
+            ->setParameter('month', $month)
             ->getQuery()
             ->getResult();
     }
+
 }

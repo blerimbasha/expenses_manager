@@ -9,7 +9,7 @@
                 <div class="alert alert-success">
                    <div class="row">
                        <div class="col-md-12">
-                           <b>{{ 'now'|date('F Y') }}</b>
+                           <b>{{ ('2017-'~(app.request.get('month')?:''|date('m'))~'-01')|date('F') }}</b>
                            <button type="button"
                                    class="btn btn-success"
                                    title="{{ 'transaction.new'|trans }}"
