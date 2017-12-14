@@ -6,6 +6,7 @@ edit : Edit
 cancel: Cancel
 avaliable: Avaliable
 outflow: Outflow
+income: Income
 
 #transaction
 transaction:
@@ -19,7 +20,7 @@ transaction:
 
 #wallet
 budget:
-  add: Add Wallet
+  add: Add Budget
   registered: Your budget has been registered
   not_registered: Your budget has been not registered
 

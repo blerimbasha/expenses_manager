@@ -26,7 +26,7 @@
                        title="{{ 'budget.add'|trans }}"
                        class="list-group-item list-group-item-action list-group-item-light"
                        style="cursor: pointer;border: 0">
-                        <h3>{{ app.user.name }} <span class="glyphicon glyphicon-euro" aria-hidden="true"></span> {{ moneyInWallets[0][1] }}</h3>
+                        <h3>{{ 'income'|trans }}  <b>{{ moneyInWallets[0][1] }}</b> <span size="3" class="text-success" style="font-size: 15px">euro / month</span> </h3>
                     </a>
                 </div>
                 {{ include('expenses/includes/show_wallet.html.twig') }}
