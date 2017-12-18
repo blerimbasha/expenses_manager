@@ -18,10 +18,13 @@ class ResetType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class,[
-                'label' => 'resetpassword.email'
+                'label' => 'password.reset_email'
             ])
             ->add('submit', SubmitType::class, [
-                'label'=> 'submit'
+                'label'=> 'submit',
+                'attr' => [
+                    'class' => 'btn btn-success btn-block'
+                ]
             ]);
     }
 
